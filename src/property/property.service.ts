@@ -7,7 +7,7 @@ import { PropertyActivitiesEntity } from './entities/property-activities.entity'
 @Injectable()
 export class PropertyService extends BaseService<PropertyEntity, typeof PrismaService.prototype.property> {
   constructor(private readonly prismaService: PrismaService) {
-    super(prismaService.property);
+    super(prismaService.property); 
   }
 }
 

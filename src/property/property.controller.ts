@@ -7,12 +7,12 @@ import { PropertyActivitiesService, PropertyService } from './property.service';
 @Controller('property')
 export class PropertyController extends BaseController<CreatePropertyDto, UpdatePropertyDto, any> {
   constructor(private readonly propertyService: PropertyService) {
-    super(propertyService);
+    super(propertyService); 
   }
 }
 @Controller('property-activities')
 export class PropertyActivitiesController extends BaseController<CreatePropertyActivitiesDto, UpdatePropertyActivitiesDto, any> {
-  constructor(private readonly propertyService: PropertyActivitiesService) {
-    super(propertyService);
+  constructor(private readonly propertyActivitiesService: PropertyActivitiesService) {
+    super(propertyActivitiesService);
   }
 }

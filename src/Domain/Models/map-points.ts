@@ -1,4 +1,5 @@
 export class MapPoint {
-  latitude: number;
-  longitude: number;
+  id: number;
+  lat: number;
+  lng: number;
 }

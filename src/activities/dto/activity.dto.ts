@@ -7,10 +7,6 @@ export class CreateActivityDto {
   name: string;
 
   @IsString()
-  @IsNotEmpty()
-  userId: string;
-
-  @IsString()
   @IsOptional()
   description?: string;
 }
