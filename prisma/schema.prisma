@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid()) @db.Char(36)
+  name      String
+  email     String   @unique
+  password  String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Activities Activities[]
+
+  PropertyOwner Property[] @relation("owner")
+
+  PropertyUser Property[] @relation("user")
+
+  PropertyActivities PropertyActivities[]
+}
+
+model Property {
+  id          String         @id @default(uuid()) @db.Char(36)
+  name        String
+  location    String
+  size        Decimal
+  mapPoints   Json
+  ownerId     String
+  owner       User           @relation("owner", fields: [ownerId], references: [id])
+  userId      String
+  user        User           @relation("user", fields: [userId], references: [id])
+  status      PropertyStatus @default(NONE)
+  description String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  PropertyActivities PropertyActivities[]
+}
+
+model PropertyActivities {
+  id           String     @id @default(uuid()) @db.Char(36)
+  propertyId   String
+  property     Property   @relation(fields: [propertyId], references: [id])
+  activitiesId String
+  activities   Activities @relation(fields: [activitiesId], references: [id])
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Activities {
+  id          String   @id @default(uuid()) @db.Char(36)
+  name        String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  PropertyActivities PropertyActivities[]
+}
+
+enum PropertyStatus {
+  NONE
+  ACTIVE
+  INACTIVE
+  LEASED
+}
