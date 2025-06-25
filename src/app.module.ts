@@ -9,6 +9,7 @@ import { HistoricModificationModule } from './historic-modification/historic-mod
 import { PropertyModule } from './property/property.module';
 import { UserModule } from './user/user.module';
 import { DepartamentModule } from './departament/departament.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [PrismaModule, 
@@ -18,7 +19,8 @@ import { DepartamentModule } from './departament/departament.module';
     AddressModule, 
     EmployeeModule, 
     DepartamentModule,
-    HistoricModificationModule
+    HistoricModificationModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

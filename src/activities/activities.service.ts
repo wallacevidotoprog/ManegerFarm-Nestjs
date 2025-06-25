@@ -1,25 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateActivityDto, UpdateActivityDto } from './dto/activity.dto';
+import { BaseService } from 'src/Domain/Repository/service-default.repository';
+import { PrismaService } from 'src/Prisma/prisma.service';
+import { ActivityEntity } from './entities/activity.entity';
 
 @Injectable()
-export class ActivitiesService {
-  create(createActivityDto: CreateActivityDto) {
-    return 'This action adds a new activity';
-  }
-
-  findAll() {
-    return `This action returns all activities`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} activity`;
-  }
-
-  update(id: number, updateActivityDto: UpdateActivityDto) {
-    return `This action updates a #${id} activity`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} activity`;
+export class ActivitiesService extends BaseService<ActivityEntity, typeof PrismaService.prototype.activities> {
+  constructor(private readonly service: PrismaService) {
+    super(service.activities);
   }
 }
