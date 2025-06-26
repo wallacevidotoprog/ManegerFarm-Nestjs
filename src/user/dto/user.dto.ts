@@ -1,7 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { Role } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
+import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, Matches, ValidateNested } from 'class-validator';
 import { CreateAddressDto } from 'src/address/dto/address.dto';
 import { EmployeeEntity } from 'src/employee/entities/employee.entity';
 export class CreateUserDto {
@@ -11,6 +11,9 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
+  @Matches(/^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/, {
+    message: 'CPF inválido',
+  })
   cpf: string;
 
   @IsEmail()

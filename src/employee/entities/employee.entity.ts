@@ -1,32 +1,111 @@
-import { CategoryCnh, Sex } from '@prisma/client';
 import { AddressEntity } from 'src/address/entities/address.entity';
 import { DepartamentFunctionsEntity } from 'src/departament/entities/department-functions.entity';
-import { EntityDefault } from 'src/Domain/Models/entity-default';
+import { CategoryCnh, Sex } from 'src/Domain/Models/Emun/db.enum';
+import { EntityDefault } from 'src/Domain/Models/entity-default.entity';
 import { PropertyEntity } from 'src/property/entities/property.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 
+@Entity('employees')
 export class EmployeeEntity extends EntityDefault {
+  @Column({ length: 100 })
   name: string;
-  cpf: string;
-  rg?: string;
-  cnh?: string;
-  category_cnh?: CategoryCnh;
-  maturity_cnh?: Date;
-  email: string;
-  phone?: string;
-  birth: Date;
-  addressId: string;
-  address?: AddressEntity;
-  admission: Date;
-  salary: number;
-  cbo?: string;
-  pis?: string;
-  sex?: Sex;
-  resignation?: Date;
-  propertyId?: string;
-  property?: PropertyEntity;
-  active: boolean = true;
 
+  @Column({ length: 14 })
+  cpf: string;
+
+  @Column({ length: 20, nullable: true })
+  rg?: string;
+
+  @Column({ length: 20, nullable: true })
+  cnh?: string;
+
+  @Column({
+    type: 'enum',
+    enum: CategoryCnh,
+    nullable: true,
+  })
+  category_cnh?: CategoryCnh;
+
+  @Column({ type: 'date', nullable: true })
+  maturity_cnh?: Date;
+
+  @Column({ length: 100 })
+  email: string;
+
+  @Column({ length: 20, nullable: true })
+  phone?: string;
+
+  @Column({ type: 'date' })
+  birth: Date;
+
+  @Column()
+  addressId: string;
+
+  @ManyToOne(() => AddressEntity, { eager: true })
+  @JoinColumn({ name: 'addressId' })
+  address?: AddressEntity;
+
+  @Column({ type: 'date' })
+  admission: Date;
+
+  @Column('decimal', { precision: 10, scale: 2 })
+  salary: number;
+
+  @Column({ length: 10, nullable: true })
+  cbo?: string;
+
+  @Column({ length: 20, nullable: true })
+  pis?: string;
+
+  @Column({
+    type: 'enum',
+    enum: Sex,
+    nullable: true,
+  })
+  sex?: Sex;
+
+  @Column({ type: 'date', nullable: true })
+  resignation?: Date;
+
+  @Column({ nullable: true })
+  propertyId?: string;
+
+  @ManyToOne(() => PropertyEntity, { nullable: true, eager: true })
+  @JoinColumn({ name: 'propertyId' })
+  property?: PropertyEntity;
+
+  @Column({ default: true })
+  active: boolean;
+
+  @OneToMany(() => DepartamentFunctionsEntity, (df) => df.employee)
   departmentFunctions: DepartamentFunctionsEntity[];
+
+  @OneToOne(() => UserEntity, (user) => user.employee)
   user?: UserEntity;
 }
+// export class EmployeeEntity extends EntityDefault {
+//   name: string;
+//   cpf: string;
+//   rg?: string;
+//   cnh?: string;
+//   category_cnh?: CategoryCnh;
+//   maturity_cnh?: Date;
+//   email: string;
+//   phone?: string;
+//   birth: Date;
+//   addressId: string;
+//   address?: AddressEntity;
+//   admission: Date;
+//   salary: number;
+//   cbo?: string;
+//   pis?: string;
+//   sex?: Sex;
+//   resignation?: Date;
+//   propertyId?: string;
+//   property?: PropertyEntity;
+//   active: boolean = true;
+
+//   departmentFunctions: DepartamentFunctionsEntity[];
+//   user?: UserEntity;
+// }

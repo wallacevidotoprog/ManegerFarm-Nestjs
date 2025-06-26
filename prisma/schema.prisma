@@ -21,8 +21,8 @@ model User {
   employeeId String?   @unique
   employee   Employee? @relation(fields: [employeeId], references: [id])
   active     Boolean   @default(true)
-  createAt    DateTime       @default(now()) @db.Timestamp(0)
-  updateAt    DateTime       @default(now()) @updatedAt @db.Timestamp(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   PropertyOwner      Property[]           @relation("owner")
   PropertyActivities PropertyActivities[]
@@ -44,8 +44,8 @@ model Property {
   status      PropertyStatus @default(NONE)
   active      Boolean        @default(true)
   description String?        @db.VarChar(255)
-  createAt    DateTime       @default(now()) @db.Timestamp(0)
-  updateAt    DateTime       @default(now()) @updatedAt @db.Timestamp(0)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 
   PropertyActivities PropertyActivities[]
 
@@ -61,8 +61,8 @@ model Address {
   neighborhood String   @db.VarChar(80)
   city         String   @db.VarChar(50)
   uf           String   @db.VarChar(2)
-  createAt     DateTime @default(now()) @db.Timestamp(0)
-  updateAt     DateTime @default(now()) @updatedAt @db.Timestamp(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   User User[]
 
@@ -79,16 +79,16 @@ model PropertyActivities {
   activities   Activities @relation(fields: [activitiesId], references: [id])
   userId       String
   user         User       @relation(fields: [userId], references: [id])
-  createAt     DateTime   @default(now()) @db.Timestamp(0)
-  updateAt     DateTime   @default(now()) @updatedAt @db.Timestamp(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }
 
 model Activities {
   id          String   @id @default(uuid()) @db.Char(36)
   name        String
   description String?  @db.VarChar(255)
-  createAt    DateTime @default(now()) @db.Timestamp(0)
-  updateAt    DateTime @default(now()) @updatedAt @db.Timestamp(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   PropertyActivities PropertyActivities[]
 }
@@ -98,8 +98,8 @@ model Department {
   name        String
   functions   Departaments @default(NONE)
   description String?      @db.VarChar(255)
-  createAt    DateTime     @default(now()) @db.Timestamp(0)
-  updateAt    DateTime     @default(now()) @updatedAt @db.Timestamp(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   Functions Functions[]
 
@@ -128,8 +128,8 @@ model Employee {
   propertyId   String?
   property     Property?    @relation(fields: [propertyId], references: [id])
   active       Boolean      @default(true)
-  createAt     DateTime     @default(now()) @db.Timestamp(0)
-  updateAt     DateTime     @default(now()) @updatedAt @db.Timestamp(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
   DepartmentFunctions DepartmentFunctions[]
 
@@ -142,8 +142,8 @@ model Functions {
   description  String?    @db.VarChar(255)
   departmentId String
   department   Department @relation(fields: [departmentId], references: [id])
-  createAt     DateTime   @default(now()) @db.Timestamp(0)
-  updateAt     DateTime   @default(now()) @updatedAt @db.Timestamp(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 
   DepartmentFunctions DepartmentFunctions[]
 }
@@ -156,14 +156,14 @@ model DepartmentFunctions {
   department   Department @relation(fields: [departmentId], references: [id])
   functionsId  String
   functions    Functions  @relation(fields: [functionsId], references: [id])
-  createAt     DateTime   @default(now()) @db.Timestamp(0)
-  updateAt     DateTime   @default(now()) @updatedAt @db.Timestamp(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }
 
 model BASE {
-  id       String   @id @default(uuid()) @db.Char(36)
-  createAt DateTime @default(now()) @db.Timestamp(0)
-  updateAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
+  id        String   @id @default(uuid()) @db.Char(36)
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
 }
 
 model HistoricModification {
@@ -173,8 +173,8 @@ model HistoricModification {
   action    ActionModification @default(NONE)
   tableName String
   jsonData  Json               @db.Json
-  createAt  DateTime           @default(now()) @db.Timestamp(0)
-  updateAt  DateTime           @default(now()) @updatedAt @db.Timestamp(0)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
 }
 
 enum PropertyStatus {

@@ -6,7 +6,6 @@ import { Response } from 'express';
 import { AuthPayload } from 'src/Domain/Models/Types/auth.types';
 import { PrismaService } from 'src/Prisma/prisma.service';
 import { CreateUserDto } from 'src/user/dto/user.dto';
-import { cleanUndefined } from 'src/utils/functions';
 import { AuthDto } from './dto/auth.dto';
 
 @Injectable()
@@ -89,6 +88,5 @@ export class AuthService {
     };
 
     const newUser = await this.service.user.create({ data: userData });
-   
   }
 }
