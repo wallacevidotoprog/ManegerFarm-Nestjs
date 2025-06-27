@@ -1,19 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/Domain/Repository/service-default.repository';
-import { PrismaService } from 'src/Prisma/prisma.service';
-import { PropertyEntity } from './entities/property.entity';
+import { Repository } from 'typeorm';
 import { PropertyActivitiesEntity } from './entities/property-activities.entity';
+import { PropertyEntity } from './entities/property.entity';
 
 @Injectable()
-export class PropertyService extends BaseService<PropertyEntity, typeof PrismaService.prototype.property> {
-  constructor(private readonly prismaService: PrismaService) {
-    super(prismaService.property); 
+export class PropertyService extends BaseService<PropertyEntity> {
+  constructor(
+    @InjectRepository(PropertyEntity)
+    protected readonly repo: Repository<PropertyEntity>,
+  ) {
+    super(repo);
   }
 }
 
 @Injectable()
-export class PropertyActivitiesService extends BaseService<PropertyActivitiesEntity, typeof PrismaService.prototype.propertyActivities> {
-  constructor(private readonly prismaService: PrismaService) {
-    super(prismaService.propertyActivities);
+export class PropertyActivitiesService extends BaseService<PropertyActivitiesEntity> {
+  constructor(
+    @InjectRepository(PropertyActivitiesEntity)
+    protected readonly repo: Repository<PropertyActivitiesEntity>,
+  ) {
+    super(repo);
   }
 }

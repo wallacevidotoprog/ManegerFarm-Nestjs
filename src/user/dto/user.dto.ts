@@ -1,9 +1,8 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { Role } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, Matches, ValidateNested } from 'class-validator';
 import { CreateAddressDto } from 'src/address/dto/address.dto';
-import { EmployeeEntity } from 'src/employee/entities/employee.entity';
+import { Role } from 'src/Domain/Models/Emun/db.enum';
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
@@ -32,7 +31,7 @@ export class CreateUserDto {
   addressId: string;
 
   @IsOptional()
-  @ValidateNested() 
+  @ValidateNested()
   @Type(() => CreateAddressDto)
   address?: CreateAddressDto;
 
@@ -45,8 +44,8 @@ export class CreateUserDto {
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => EmployeeEntity)
-  employee?: EmployeeEntity;
+  @Type(() => CreateAddressDto)
+  employee?: CreateAddressDto;
 
   @IsOptional()
   @IsBoolean()

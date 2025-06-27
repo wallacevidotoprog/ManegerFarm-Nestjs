@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { Departaments } from '@prisma/client';
 import { IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { Departaments } from 'src/Domain/Models/Emun/db.enum';
 export class CreateDepartmentDto {
   @IsString()
   @IsNotEmpty()

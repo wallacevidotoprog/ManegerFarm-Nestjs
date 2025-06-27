@@ -1,10 +1,10 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CategoryCnh, Sex } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { IsBoolean, IsDate, IsEmail, IsEnum, IsNumber, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
-import { AddressEntity } from 'src/address/entities/address.entity';
-import { PropertyEntity } from 'src/property/entities/property.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { CreateAddressDto } from 'src/address/dto/address.dto';
+import { CategoryCnh, Sex } from 'src/Domain/Models/Emun/db.enum';
+import { CreatePropertyDto } from 'src/property/dto/property.dto';
+import { CreateUserDto } from 'src/user/dto/user.dto';
 export class CreateEmployeeDto {
   @IsString()
   name: string;
@@ -45,8 +45,8 @@ export class CreateEmployeeDto {
   addressId: string;
 
   @IsOptional()
-  @Type(() => AddressEntity)
-  address?: AddressEntity;
+  @Type(() => CreateAddressDto)
+  address?: CreateAddressDto;
 
   @IsDate()
   @Type(() => Date)
@@ -79,8 +79,8 @@ export class CreateEmployeeDto {
   propertyId?: string;
 
   @IsOptional()
-  @Type(() => PropertyEntity)
-  property?: PropertyEntity;
+  @Type(() => CreatePropertyDto)
+  property?: CreatePropertyDto;
 
   @IsBoolean()
   active: boolean = true;
@@ -96,7 +96,7 @@ export class CreateEmployeeDto {
   updateAt?: Date;
 
   @IsOptional()
-  @Type(() => UserEntity)
-  user?: UserEntity;
+  @Type(() => CreateUserDto)
+  user?: CreateUserDto;
 }
 export class UpdateEmployeeDto extends PartialType(CreateEmployeeDto) {}

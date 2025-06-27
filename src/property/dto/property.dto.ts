@@ -1,21 +1,11 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { PropertyStatus } from '@prisma/client';
 import { Type } from 'class-transformer';
-import {
-  IsBoolean,
-  IsDecimal,
-  IsEnum,
-  IsJSON,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-  MaxLength,
-  ValidateNested,
-} from 'class-validator';
+import { IsBoolean, IsEnum, IsJSON, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, MaxLength, ValidateNested } from 'class-validator';
+import { CreateAddressDto } from 'src/address/dto/address.dto';
 import { AddressEntity } from 'src/address/entities/address.entity';
+import { PropertyStatus } from 'src/Domain/Models/Emun/db.enum';
 import { MapPoint } from 'src/Domain/Models/map-points';
+import { CreateUserDto } from 'src/user/dto/user.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
 
 export class CreatePropertyDto {
@@ -35,8 +25,8 @@ export class CreatePropertyDto {
   addressId: string;
 
   @ValidateNested()
-  @Type(() => AddressEntity)
-  address: AddressEntity;
+  @Type(() => CreateAddressDto)
+  address: CreateAddressDto;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   size: number;
@@ -50,8 +40,8 @@ export class CreatePropertyDto {
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => UserEntity)
-  owner?: UserEntity;
+  @Type(() => CreateUserDto)
+  owner?: CreateUserDto;
 
   @IsEnum(PropertyStatus)
   @IsOptional()

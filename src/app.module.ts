@@ -1,32 +1,36 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from './Prisma/prisma.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActivitiesModule } from './activities/activities.module';
 import { AddressModule } from './address/address.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { AppConfigEnv } from './common/config/app-config.env';
+import { AppConfigModule } from './common/config/app-config.module';
+import { DepartamentModule } from './departament/departament.module';
 import { EmployeeModule } from './employee/employee.module';
 import { HistoricModificationModule } from './historic-modification/historic-modification.module';
 import { PropertyModule } from './property/property.module';
 import { UserModule } from './user/user.module';
-import { DepartamentModule } from './departament/departament.module';
-import { AuthModule } from './auth/auth.module';
-import { Type } from 'class-transformer';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DB_HOST ,
-      port: Number.parseInt(process.env.DB_PORT || '3306'),
-      username: process.env.DB_USERNAME ,
-      password: process.env.DB_PASSWORD ,
-      database: process.env.DB_DATABASE,
-      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-      synchronize: true,
-      logging: true,
+    AppConfigModule,
+    TypeOrmModule.forRootAsync({
+      imports: [AppConfigModule],
+      inject: [AppConfigEnv],
+      useFactory: (config: AppConfigEnv) => ({
+        type: 'mysql',
+        host: config.DB_HOST,
+        port: config.DB_PORT,
+        username: config.DB_USERNAME,
+        password: config.DB_PASSWORD,
+        database: config.DB_DATABASE,
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        synchronize: true,
+        logging: true,
+      }),
     }),
-    PrismaModule,
     UserModule,
     PropertyModule,
     ActivitiesModule,
@@ -34,7 +38,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     EmployeeModule,
     DepartamentModule,
     HistoricModificationModule,
-    AuthModule
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

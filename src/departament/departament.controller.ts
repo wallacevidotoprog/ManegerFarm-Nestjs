@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { BaseController } from 'src/Domain/Repository/controller-default.repository';
 import { DepartamentFunctionsService, DepartamentService, FunctionsService } from './departament.service';
-import { CreateDepartmentFunctionsDto, UpdateDepartmentFunctionsDto } from './dto/departament-functions.dto';
+import { CreateDepartamentFunctionsDto, UpdateDepartmentFunctionsDto } from './dto/departament-functions.dto';
 import { CreateDepartmentDto, UpdateDepartmentDto } from './dto/departament.dto';
 import { CreateFunctionsDto, UpdateFunctionsDto } from './dto/functions .dto';
 
@@ -18,8 +18,8 @@ export class FunctionsController extends BaseController<CreateFunctionsDto, Upda
   }
 }
 @Controller('department-functions')
-export class DepartamentFunctionsController extends BaseController<CreateDepartmentFunctionsDto, UpdateDepartmentFunctionsDto, any> {
+export class DepartamentFunctionsController extends BaseController<CreateDepartamentFunctionsDto, UpdateDepartmentFunctionsDto, any> {
   constructor(private readonly departmentFunctionsService: DepartamentFunctionsService) {
-    super(departmentFunctionsService);
+    super(departmentFunctionsService as any);
   }
 }
