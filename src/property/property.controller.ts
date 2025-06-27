@@ -7,7 +7,7 @@ import { PropertyActivitiesService, PropertyService } from './property.service';
 @Controller('property')
 export class PropertyController extends BaseController<CreatePropertyDto, UpdatePropertyDto, any> {
   constructor(private readonly propertyService: PropertyService) {
-    super(propertyService); 
+    super(propertyService as any); 
   }
 }
 @Controller('property-activities')

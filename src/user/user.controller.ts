@@ -6,6 +6,6 @@ import { BaseController } from 'src/Domain/Repository/controller-default.reposit
 @Controller('user')
 export class UserController extends BaseController<CreateUserDto,UpdateUserDto,any> {
   constructor(private readonly userService: UserService) {
-    super(userService)
+    super(userService as any);
   }
 }

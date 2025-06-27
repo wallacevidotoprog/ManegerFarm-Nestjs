@@ -1,17 +1,11 @@
-import { PropertyStatus, User } from '@prisma/client';
 import { AddressEntity } from 'src/address/entities/address.entity';
+import { PropertyStatus } from 'src/Domain/Models/Emun/db.enum';
 import { EntityDefault } from 'src/Domain/Models/entity-default.entity';
 import { MapPoint } from 'src/Domain/Models/map-points';
 import { EmployeeEntity } from 'src/employee/entities/employee.entity';
-import { PropertyActivitiesEntity } from './property-activities.entity';
-import {
-  Entity,
-  Column,
-  ManyToOne,
-  OneToMany,
-  JoinColumn,
-} from 'typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { PropertyActivitiesEntity } from './property-activities.entity';
 
 @Entity('properties')
 export class PropertyEntity extends EntityDefault {
@@ -27,7 +21,7 @@ export class PropertyEntity extends EntityDefault {
   @Column()
   addressId: string;
 
-  @ManyToOne(() => AddressEntity, { eager: true })
+  @ManyToOne(() => AddressEntity, { cascade: true,eager: true })
   @JoinColumn({ name: 'addressId' })
   address: AddressEntity;
 
@@ -40,7 +34,7 @@ export class PropertyEntity extends EntityDefault {
   @Column({ nullable: true })
   ownerId?: string;
 
-  @ManyToOne(() => UserEntity, { nullable: true })
+  @ManyToOne(() => UserEntity, { cascade: true,nullable: true })
   @JoinColumn({ name: 'ownerId' })
   owner?: UserEntity;
 

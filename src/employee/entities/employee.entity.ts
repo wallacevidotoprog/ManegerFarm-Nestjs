@@ -42,7 +42,7 @@ export class EmployeeEntity extends EntityDefault {
   @Column()
   addressId: string;
 
-  @ManyToOne(() => AddressEntity, { eager: true })
+  @ManyToOne(() => AddressEntity, { cascade: true,eager: true })
   @JoinColumn({ name: 'addressId' })
   address?: AddressEntity;
 
@@ -71,7 +71,7 @@ export class EmployeeEntity extends EntityDefault {
   @Column({ nullable: true })
   propertyId?: string;
 
-  @ManyToOne(() => PropertyEntity, { nullable: true, eager: true })
+  @ManyToOne(() => PropertyEntity, { cascade: true,nullable: true, eager: true })
   @JoinColumn({ name: 'propertyId' })
   property?: PropertyEntity;
 

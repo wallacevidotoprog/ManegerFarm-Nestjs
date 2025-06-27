@@ -8,7 +8,7 @@ export abstract class EntityDefault {
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  updatedAt: Date;
+  updatedAt: Date; 
 }
 // export class EntityDefault {
 //   id: string;

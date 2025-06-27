@@ -1,7 +1,6 @@
 import { Departaments } from 'src/Domain/Models/Emun/db.enum';
 import { EntityDefault } from 'src/Domain/Models/entity-default.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
-import { DepartamentFunctionsEntity } from './department-functions.entity';
 import { FunctionsEntity } from './functions .entity';
 
 @Entity('departaments')

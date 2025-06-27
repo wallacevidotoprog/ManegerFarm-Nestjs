@@ -1,27 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/Domain/Repository/service-default.repository';
-import { PrismaService } from 'src/Prisma/prisma.service';
+import { Repository } from 'typeorm';
 import { DepartamentFunctionsEntity } from './entities/department-functions.entity';
 import { DepartamentEntity } from './entities/department.entity';
 import { FunctionsEntity } from './entities/functions .entity';
 
 @Injectable()
-export class DepartamentService extends BaseService<DepartamentEntity, typeof PrismaService.prototype.department> {
-  constructor(private readonly prismaService: PrismaService) {
-    super(prismaService.department);
+export class DepartamentService extends BaseService<DepartamentEntity> {
+  constructor(
+    @InjectRepository(DepartamentEntity)
+    protected readonly repo: Repository<DepartamentEntity>,
+  ) {
+    super(repo);
   }
 }
 
 @Injectable()
-export class FunctionsService extends BaseService<FunctionsEntity, typeof PrismaService.prototype.functions> {
-  constructor(private readonly prismaService: PrismaService) {
-    super(prismaService.functions);
+export class FunctionsService extends BaseService<FunctionsEntity> {
+  constructor(
+    @InjectRepository(FunctionsEntity)
+    protected readonly repo: Repository<FunctionsEntity>,
+  ) {
+    super(repo);
   }
 }
 
 @Injectable()
-export class DepartamentFunctionsService extends BaseService<DepartamentFunctionsEntity, typeof PrismaService.prototype.departmentFunctions> {
-  constructor(private readonly prismaService: PrismaService) {
-    super(prismaService.departmentFunctions);
+export class DepartamentFunctionsService extends BaseService<DepartamentFunctionsEntity> {
+  constructor(
+    @InjectRepository(DepartamentFunctionsEntity)
+    protected readonly repo: Repository<DepartamentFunctionsEntity>,
+  ) {
+    super(repo);
   }
 }

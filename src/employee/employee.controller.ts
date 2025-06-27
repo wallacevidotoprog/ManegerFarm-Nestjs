@@ -6,6 +6,6 @@ import { EmployeeService } from './employee.service';
 @Controller('employee')
 export class EmployeeController extends BaseController<CreateEmployeeDto, UpdateEmployeeDto, any> {
   constructor(private readonly employeeService: EmployeeService) {
-    super(employeeService);
+    super(employeeService as any);
   }
 }

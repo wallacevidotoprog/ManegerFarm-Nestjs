@@ -1,22 +1,28 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma } from '@prisma/client';
 import { compare, hash } from 'bcrypt';
+import { plainToInstance } from 'class-transformer';
 import { Response } from 'express';
 import { AuthPayload } from 'src/Domain/Models/Types/auth.types';
-import { PrismaService } from 'src/Prisma/prisma.service';
 import { CreateUserDto } from 'src/user/dto/user.dto';
+import { UserEntity } from 'src/user/entities/user.entity';
+import { Repository } from 'typeorm';
 import { AuthDto } from './dto/auth.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { UserRegisteredEvent } from 'src/user/event/user-registered.event';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly service: PrismaService,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
     private readonly jwtService: JwtService,
+    private eventEmitter: EventEmitter2
   ) {}
 
   public async aLogin(createAuthDto: AuthDto, res: Response) {
-    const user = await this.service.user.findUnique({
+    const user = await this.userRepository.findOne({
       where: { email: createAuthDto.email },
     });
 
@@ -59,34 +65,23 @@ export class AuthService {
     }
   }
   async aRegister(createAuthDto: CreateUserDto, res: Response<any, Record<string, any>>) {
-    const user = await this.service.user.findFirst({
-      where: {
-        OR: [{ email: createAuthDto.email }, { cpf: createAuthDto.cpf }],
-      },
-    });
 
+    // console.log('aRegister: ',this.userRepository);
+    
+    const user = await this.userRepository.findOne({
+      where: [{ email: createAuthDto.email }, { cpf: createAuthDto.cpf }],
+    });
     if (user) {
       throw new UnauthorizedException('Usuário já cadastrado');
     }
 
     const hashedPassword = await hash(createAuthDto.password, 10);
-
-    const userData: Prisma.UserCreateInput = {
-      name: createAuthDto.name,
-      cpf: createAuthDto.cpf,
-      email: createAuthDto.email,
-      phone: createAuthDto.phone,
-      role: createAuthDto.role,
+    const userEntity = plainToInstance(UserEntity, {
+      ...createAuthDto,
       password: hashedPassword,
-      active: createAuthDto.active,
-      ...(createAuthDto.employeeId && { employee: { connect: { id: createAuthDto.employeeId } } }),
-      ...(createAuthDto.address && {
-        address: {
-          create: createAuthDto.address,
-        },
-      }),
-    };
+    });
 
-    const newUser = await this.service.user.create({ data: userData });
+    const newUser = await this.userRepository.save(userEntity);
+    this.eventEmitter.emit('user.registered', new UserRegisteredEvent(userEntity.email, userEntity.name));
   }
 }

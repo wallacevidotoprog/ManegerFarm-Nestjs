@@ -1,30 +1,30 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { Type } from 'class-transformer';
 import { IsUUID, ValidateNested } from 'class-validator';
-import { EmployeeEntity } from 'src/employee/entities/employee.entity';
-import { DepartamentEntity } from '../entities/department.entity';
-import { FunctionsEntity } from '../entities/functions .entity';
+import { CreateEmployeeDto } from 'src/employee/dto/employee.dto';
+import { CreateDepartmentDto } from './departament.dto';
+import { CreateFunctionsDto } from './functions .dto';
 
-export class CreateDepartmentFunctionsDto {
+export class CreateDepartamentFunctionsDto {
   @IsUUID()
   employeeId: string;
 
   @ValidateNested()
-  @Type(() => EmployeeEntity)
-  employee: EmployeeEntity;
+  @Type(() => CreateEmployeeDto)
+  employee: CreateEmployeeDto;
 
   @IsUUID()
   departmentId: string;
 
   @ValidateNested()
-  @Type(() => DepartamentEntity)
-  department: DepartamentEntity;
+  @Type(() => CreateDepartmentDto)
+  department: CreateDepartmentDto;
 
   @IsUUID()
   functionsId: string;
 
   @ValidateNested()
-  @Type(() => FunctionsEntity)
-  functions: FunctionsEntity;
+  @Type(() => CreateFunctionsDto)
+  functions: CreateFunctionsDto;
 }
-export class UpdateDepartmentFunctionsDto extends PartialType(CreateDepartmentFunctionsDto) {}
+export class UpdateDepartmentFunctionsDto extends PartialType(CreateDepartamentFunctionsDto) {}

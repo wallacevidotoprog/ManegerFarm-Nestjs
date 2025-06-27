@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/Domain/Repository/service-default.repository';
-import { PrismaService } from 'src/Prisma/prisma.service';
+import { Repository } from 'typeorm';
 import { AddressEntity } from './entities/address.entity';
 
 @Injectable()
-export class AddressService extends BaseService<AddressEntity, typeof PrismaService.prototype.address> {
-  constructor(private readonly prismaService: PrismaService) {
-    super(prismaService.address);
+export class AddressService extends BaseService<AddressEntity> {
+  constructor(
+    @InjectRepository(AddressEntity)
+    protected readonly repo: Repository<AddressEntity>,
+  ) {
+    super(repo);
   }
 }
