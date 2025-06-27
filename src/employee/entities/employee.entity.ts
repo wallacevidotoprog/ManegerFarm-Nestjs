@@ -1,9 +1,12 @@
+import { CreateAddressDto } from 'src/address/dto/address.dto';
 import { AddressEntity } from 'src/address/entities/address.entity';
+import { CreateDepartamentFunctionsDto } from 'src/departament/dto/departament-functions.dto';
 import { DepartamentFunctionsEntity } from 'src/departament/entities/department-functions.entity';
 import { CategoryCnh, Sex } from 'src/Domain/Models/Emun/db.enum';
 import { EntityDefault } from 'src/Domain/Models/entity-default.entity';
+import { CreatePropertyDto } from 'src/property/dto/property.dto';
 import { PropertyEntity } from 'src/property/entities/property.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { CreateUserDto } from 'src/user/dto/user.dto';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 
 @Entity('employees')
@@ -81,8 +84,8 @@ export class EmployeeEntity extends EntityDefault {
   @OneToMany(() => DepartamentFunctionsEntity, (df) => df.employee)
   departmentFunctions: DepartamentFunctionsEntity[];
 
-  @OneToOne(() => UserEntity, (user) => user.employee)
-  user?: UserEntity;
+  @OneToOne(() => CreateUserDto, (user) => user.employee)
+  user?: CreateUserDto;
 }
 // export class EmployeeEntity extends EntityDefault {
 //   name: string;

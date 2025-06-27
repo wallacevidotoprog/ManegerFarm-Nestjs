@@ -9,8 +9,11 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AuthDto } from './dto/auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+<<<<<<< HEAD
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserRegisteredEvent } from 'src/user/event/user-registered.event';
+=======
+>>>>>>> 55463c9267fb1fcf49b882427f7dc2bc1e2299dc
 
 @Injectable()
 export class AuthService {
@@ -65,9 +68,12 @@ export class AuthService {
     }
   }
   async aRegister(createAuthDto: CreateUserDto, res: Response<any, Record<string, any>>) {
+<<<<<<< HEAD
 
     // console.log('aRegister: ',this.userRepository);
     
+=======
+>>>>>>> 55463c9267fb1fcf49b882427f7dc2bc1e2299dc
     const user = await this.userRepository.findOne({
       where: [{ email: createAuthDto.email }, { cpf: createAuthDto.cpf }],
     });
@@ -82,6 +88,9 @@ export class AuthService {
     });
 
     const newUser = await this.userRepository.save(userEntity);
+<<<<<<< HEAD
     this.eventEmitter.emit('user.registered', new UserRegisteredEvent(userEntity.email, userEntity.name));
+=======
+>>>>>>> 55463c9267fb1fcf49b882427f7dc2bc1e2299dc
   }
 }
