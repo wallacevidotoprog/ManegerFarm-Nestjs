@@ -1,12 +1,9 @@
-import { CreateAddressDto } from 'src/address/dto/address.dto';
 import { AddressEntity } from 'src/address/entities/address.entity';
-import { CreateDepartamentFunctionsDto } from 'src/departament/dto/departament-functions.dto';
 import { DepartamentFunctionsEntity } from 'src/departament/entities/department-functions.entity';
 import { CategoryCnh, Sex } from 'src/Domain/Models/Emun/db.enum';
 import { EntityDefault } from 'src/Domain/Models/entity-default.entity';
-import { CreatePropertyDto } from 'src/property/dto/property.dto';
 import { PropertyEntity } from 'src/property/entities/property.entity';
-import { CreateUserDto } from 'src/user/dto/user.dto';
+import { UserEntity } from 'src/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 
 @Entity('employees')
@@ -45,7 +42,7 @@ export class EmployeeEntity extends EntityDefault {
   @Column()
   addressId: string;
 
-  @ManyToOne(() => AddressEntity, { cascade: true,eager: true })
+  @ManyToOne(() => AddressEntity, { cascade: true, eager: true })
   @JoinColumn({ name: 'addressId' })
   address?: AddressEntity;
 
@@ -74,7 +71,7 @@ export class EmployeeEntity extends EntityDefault {
   @Column({ nullable: true })
   propertyId?: string;
 
-  @ManyToOne(() => PropertyEntity, { cascade: true,nullable: true, eager: true })
+  @ManyToOne(() => PropertyEntity, { cascade: true, nullable: true, eager: true })
   @JoinColumn({ name: 'propertyId' })
   property?: PropertyEntity;
 
@@ -84,8 +81,8 @@ export class EmployeeEntity extends EntityDefault {
   @OneToMany(() => DepartamentFunctionsEntity, (df) => df.employee)
   departmentFunctions: DepartamentFunctionsEntity[];
 
-  @OneToOne(() => CreateUserDto, (user) => user.employee)
-  user?: CreateUserDto;
+  @OneToOne(() => UserEntity, (user) => user.employee)
+  user?: UserEntity;
 }
 // export class EmployeeEntity extends EntityDefault {
 //   name: string;

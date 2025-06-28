@@ -4,11 +4,9 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AppConfigEnv {
   constructor(private readonly config: ConfigService) {}
-<<<<<<< HEAD
+
 
   // CONECT DB
-=======
->>>>>>> 55463c9267fb1fcf49b882427f7dc2bc1e2299dc
   get DB_HOST(): string {
     return this.requireEnv(this.config.get<string>('DB_HOST'), 'DB_HOST');
   }
@@ -28,7 +26,7 @@ export class AppConfigEnv {
     return this.requireEnv(this.config.get<string>('JWT_SECRET'), 'JWT_SECRET');
   }
 
-<<<<<<< HEAD
+  
 // SEND EMAIL
   get HOST_EMAIL(): string {
     return this.requireEnv(this.config.get<string>('HOST_EMAIL'), 'HOST_EMAIL');
@@ -50,14 +48,6 @@ export class AppConfigEnv {
 
 
 
-
-
-
-
-
-
-=======
->>>>>>> 55463c9267fb1fcf49b882427f7dc2bc1e2299dc
   private requireEnv<T>(value: T | undefined, key: string): T {
     if (value === undefined || value === null) throw new Error(`Variável de ambiente ${key} não definida`);
     return value;

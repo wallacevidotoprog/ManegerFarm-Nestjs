@@ -1,19 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 import { compare, hash } from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 import { Response } from 'express';
 import { AuthPayload } from 'src/Domain/Models/Types/auth.types';
 import { CreateUserDto } from 'src/user/dto/user.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
+import { UserKeyEvent, UserRegisteredEvent } from 'src/user/event/user-registered.event';
 import { Repository } from 'typeorm';
-import { AuthDto } from './dto/auth.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-<<<<<<< HEAD
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { UserRegisteredEvent } from 'src/user/event/user-registered.event';
-=======
->>>>>>> 55463c9267fb1fcf49b882427f7dc2bc1e2299dc
+import { ActiveAccountDto, AuthDto } from './dto/auth.dto';
+import { Role } from 'src/Domain/Models/Emun/db.enum';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +19,7 @@ export class AuthService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly jwtService: JwtService,
-    private eventEmitter: EventEmitter2
+    private eventEmitter: EventEmitter2,
   ) {}
 
   public async aLogin(createAuthDto: AuthDto, res: Response) {
@@ -67,13 +65,8 @@ export class AuthService {
       throw new UnauthorizedException('Token inválido');
     }
   }
-  async aRegister(createAuthDto: CreateUserDto, res: Response<any, Record<string, any>>) {
-<<<<<<< HEAD
 
-    // console.log('aRegister: ',this.userRepository);
-    
-=======
->>>>>>> 55463c9267fb1fcf49b882427f7dc2bc1e2299dc
+  async aRegister(createAuthDto: CreateUserDto, res: Response<any, Record<string, any>>) {
     const user = await this.userRepository.findOne({
       where: [{ email: createAuthDto.email }, { cpf: createAuthDto.cpf }],
     });
@@ -84,13 +77,39 @@ export class AuthService {
     const hashedPassword = await hash(createAuthDto.password, 10);
     const userEntity = plainToInstance(UserEntity, {
       ...createAuthDto,
+      role: Role.OWNER,
+      active: false,
       password: hashedPassword,
     });
 
-    const newUser = await this.userRepository.save(userEntity);
-<<<<<<< HEAD
-    this.eventEmitter.emit('user.registered', new UserRegisteredEvent(userEntity.email, userEntity.name));
-=======
->>>>>>> 55463c9267fb1fcf49b882427f7dc2bc1e2299dc
+    const newUser = await this.userRepository.save(userEntity);    
+
+    this.eventEmitter.emit('user.key', new UserKeyEvent(createAuthDto.email, createAuthDto.name,newUser.id.split('-')[0]));
+
+  }
+  async aActiveAccount(activeAccountDto: ActiveAccountDto) {
+    const user = await this.userRepository.findOne({
+      where: [{ email: activeAccountDto.email }],
+    });
+
+    if (!user) {
+      throw new Error('Usuário não cadastrado.');
+    }
+    const key = user.id.split('-')[0];
+
+    console.log('UserID:', user.id, 'Key:', key);
+
+    if (key != activeAccountDto.key) {
+      throw new Error('Key inválida..');
+    }
+
+    // const update: UserEntity = { ...user, active: true };
+
+    await this.userRepository.update(user.id,{active:true});
+
+
+    this.eventEmitter.emit('user.registered', new UserRegisteredEvent(user.email, user.name));
+
+    return user
   }
 }

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post,Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto } from './dto/auth.dto';
+import { ActiveAccountDto, AuthDto } from './dto/auth.dto';
 import { Response } from 'express';
 import { CreateUserDto } from 'src/user/dto/user.dto';
 
@@ -30,5 +30,11 @@ export class AuthController {
   @Post('register')
   async register(@Body() createDto: CreateUserDto, @Res({ passthrough: true }) res: Response) {
     return await this.authService.aRegister(createDto, res);
+  }
+
+   @HttpCode(HttpStatus.OK)
+  @Post('active-account')
+  async aActiveAccount(@Body()activeAccountDto: ActiveAccountDto) {
+    return await this.authService.aActiveAccount(activeAccountDto);
   }
 }

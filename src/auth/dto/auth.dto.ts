@@ -7,3 +7,11 @@ export class AuthDto {
   @IsString({ message: 'A senha é obrigatória' })
   password: string;
 }
+
+export class ActiveAccountDto {
+ @IsEmail({}, { message: 'Informe um e-mail válido' })
+  email: string;
+
+  @IsString({ message: 'A key é obrigatória' })
+  key: string;
+}

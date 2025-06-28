@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -61,20 +61,13 @@ import { AppConfigEnv } from './app-config.env';
             },
           },
           defaults: {
-            from: `"NÃO RESPONDER" <${config.HOST_EMAIL}>`,
+            from: `"Manager Farm" <${config.HOST_EMAIL}>`,
           },
         };
       },
     }),
-  ],
-=======
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { AppConfigEnv } from './app-config.env';
+  ], 
 
-@Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true })],
->>>>>>> 55463c9267fb1fcf49b882427f7dc2bc1e2299dc
   providers: [AppConfigEnv],
   exports: [AppConfigEnv],
 })
