@@ -32,16 +32,30 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message = exception instanceof HttpException ? exception.getResponse() : 'Internal server error';
+    const exceptionResponse =
+      exception instanceof HttpException ? exception.getResponse() : 'Internal server error';
+
+    let errorMessage: string | string[] | object = 'Internal server error';
+
+    if (typeof exceptionResponse === 'string') {
+      errorMessage = exceptionResponse;
+    } else if (typeof exceptionResponse === 'object') {
+      const res = exceptionResponse as any;
+      errorMessage = res.message ?? res.error ?? 'Erro desconhecido';
+    }
 
     response.status(status).json({
       success: false,
       timestamp: new Date().toISOString(),
       path: request.url,
       statusCode: status,
-      message,
+      message: errorMessage,
     });
   }
 }
+

@@ -17,7 +17,7 @@ export function TemplateHTML(main: string): string {
             <!-- Header -->
             <tr>
               <td style="background-color: #2e7d32; padding: 20px; text-align: center;">
-                <img src="https://w7.pngwing.com/pngs/108/266/png-transparent-domestic-pig-logo-farm-pig-mammal-animals-carnivoran-thumbnail.png" alt="Logo" style="display: block; margin: auto;" />
+                <img src="https://s3.amazonaws.com/enlizt-resources-prod/companies/28fee650-a0b2-11ed-99b7-fd885a4fbd86_256_avatar?nocache=1733856989442" alt="Logo" style="display: block; margin: auto; width: 60px; height: 60px" />
               </td>
             </tr>
 
@@ -40,7 +40,7 @@ export function TemplateHTML(main: string): string {
         `;
 }
 
-export function MainWelcome(name: string,text:string) {
+export function MainWelcome(name: string, text: string) {
   return `
     <tr>
               <td style="background-color: #e8f5e9; padding: 30px; color: #333;">
@@ -66,7 +66,7 @@ export function KeyAccess(name: string, key: string) {
                   type="text"
                   value="${key}"
                   disabled
-                  style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background-color: #f5f5f5"
+                  style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background-color: #f5f5f5 ; text-align: center;" ; 
                 />
                 <p style="margin-top: 30px"></p>
               </td>

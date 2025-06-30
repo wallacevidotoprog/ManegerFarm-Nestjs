@@ -5,13 +5,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { compare, hash } from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 import { Response } from 'express';
+import { Role } from 'src/Domain/Models/Emun/db.enum';
 import { AuthPayload } from 'src/Domain/Models/Types/auth.types';
 import { CreateUserDto } from 'src/user/dto/user.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { UserKeyEvent, UserRegisteredEvent } from 'src/user/event/user-registered.event';
 import { Repository } from 'typeorm';
 import { ActiveAccountDto, AuthDto } from './dto/auth.dto';
-import { Role } from 'src/Domain/Models/Emun/db.enum';
 
 @Injectable()
 export class AuthService {
@@ -42,6 +42,10 @@ export class AuthService {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
+
+    return {
+      user_name:user.name
+    }
   }
 
   public async aLogout(res: Response<any, Record<string, any>>) {
@@ -66,7 +70,7 @@ export class AuthService {
     }
   }
 
-  async aRegister(createAuthDto: CreateUserDto, res: Response<any, Record<string, any>>) {
+  async aRegister(createAuthDto: CreateUserDto) {
     const user = await this.userRepository.findOne({
       where: [{ email: createAuthDto.email }, { cpf: createAuthDto.cpf }],
     });
@@ -82,10 +86,11 @@ export class AuthService {
       password: hashedPassword,
     });
 
-    const newUser = await this.userRepository.save(userEntity);    
+    const newUser = await this.userRepository.save(userEntity);
 
-    this.eventEmitter.emit('user.key', new UserKeyEvent(createAuthDto.email, createAuthDto.name,newUser.id.split('-')[0]));
+    this.eventEmitter.emit('user.key', new UserKeyEvent(createAuthDto.email, createAuthDto.name, newUser.id.split('-')[0]));
 
+    return 'OK BROT';
   }
   async aActiveAccount(activeAccountDto: ActiveAccountDto) {
     const user = await this.userRepository.findOne({
@@ -97,19 +102,13 @@ export class AuthService {
     }
     const key = user.id.split('-')[0];
 
-    console.log('UserID:', user.id, 'Key:', key);
 
     if (key != activeAccountDto.key) {
       throw new Error('Key inválida..');
     }
 
-    // const update: UserEntity = { ...user, active: true };
-
-    await this.userRepository.update(user.id,{active:true});
-
+    await this.userRepository.update(user.id, { active: true });
 
     this.eventEmitter.emit('user.registered', new UserRegisteredEvent(user.email, user.name));
-
-    return user
   }
 }

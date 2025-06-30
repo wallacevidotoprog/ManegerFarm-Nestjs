@@ -29,7 +29,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('register')
   async register(@Body() createDto: CreateUserDto, @Res({ passthrough: true }) res: Response) {
-    return await this.authService.aRegister(createDto, res);
+    return await this.authService.aRegister(createDto);
   }
 
    @HttpCode(HttpStatus.OK)

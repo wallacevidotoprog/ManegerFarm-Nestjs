@@ -19,10 +19,16 @@ export class MailService {
   }
 
   async sendEmail(to: string, subject: string, text: string) {
-    await this.mailerService.sendMail({
+    try {
+      await this.mailerService.sendMail({
       to,
       subject,
       html: TemplateHTML(text),
     });
+    } catch (error) {
+      console.log('sendEmail',error);
+      
+    }
+    
   }
 }

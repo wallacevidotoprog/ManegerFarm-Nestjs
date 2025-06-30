@@ -42,7 +42,7 @@ import { AppConfigEnv } from './app-config.env';
             HistoricModificationEntity,
           ],
           // synchronize: true,
-          logging: true,
+          // logging: true,
         };
       },
     }),
