@@ -22,7 +22,6 @@ export class CrudHistoricEventService {
         jsonData: event.jsonData,
       };
       const result = await this.repo.save(created);
-      console.log(result);
     } catch (error) {
       console.error('Erro ao criar entidade:', error);
     }

@@ -2,7 +2,7 @@ import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Request } from 'express';
 import { CrudEvent } from 'src/event/historic/event-crud.event';
-import { DeepPartial, FindOptionsWhere, ILike, ObjectLiteral, Repository } from 'typeorm';
+import { DeepPartial, FindOptionsOrder, FindOptionsWhere, ILike, ObjectLiteral, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { ActionModification } from '../Models/Emun/db.enum';
 export abstract class BaseService<
@@ -54,18 +54,39 @@ export abstract class BaseService<
     }
   }
 
-  async findAll(req: Request, where?: FindWhere): Promise<TModel[]> {
+  async findAll(req: Request, pagination: { page: number; limit: number }, where: Record<string, any> = {}): Promise<{ data: TModel[]; total: number }> {
     try {
-      if (where) {
-        const typeOrmWhere = this.buildTypeOrmWhere(where);
-        return this.repo.find({ where: typeOrmWhere });
-      }
-      return this.repo.find();
+      const { page, limit } = pagination;
+      const skip = (page - 1) * limit;
+
+      const typeOrmWhere = this.buildTypeOrmWhere(where);
+
+      const [data, total] = await this.repo.findAndCount({
+        where: typeOrmWhere,
+        take: limit,
+        skip,
+        // order: { [key as keyof TModel]: 'DESC' } as FindOptionsOrder<TModel>
+      });
+
+      return { data, total };
     } catch (error) {
-      console.error('Erro ao findAll entidade:', error);
-      throw new BadRequestException(error?.message || 'Erro ao findAll entidade');
+      console.error('Erro ao buscar registros:', error);
+      throw new BadRequestException(error?.message || 'Erro ao buscar registros');
     }
   }
+
+  // async findAll(req: Request, where?: FindWhere): Promise<TModel[]> {
+  //   try {
+  //     if (where) {
+  //       const typeOrmWhere = this.buildTypeOrmWhere(where);
+  //       return this.repo.find({ where: typeOrmWhere });
+  //     }
+  //     return this.repo.find();
+  //   } catch (error) {
+  //     console.error('Erro ao findAll entidade:', error);
+  //     throw new BadRequestException(error?.message || 'Erro ao findAll entidade');
+  //   }
+  // }
 
   async remove(id: string, req: Request): Promise<void> {
     try {
