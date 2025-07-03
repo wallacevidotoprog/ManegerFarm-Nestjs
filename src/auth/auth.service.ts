@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotAcceptableException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,18 +6,24 @@ import { compare, hash } from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 import { Response } from 'express';
 import { Role } from 'src/Domain/Models/Emun/db.enum';
-import { AuthPayload } from 'src/Domain/Models/Types/auth.types';
+import { UserRequest } from 'src/Domain/Models/Types/user-req.types';
+import { EmployeeEntity } from 'src/employee/entities/employee.entity';
+import { PropertyEntity } from 'src/property/entities/property.entity';
 import { CreateUserDto } from 'src/user/dto/user.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { UserKeyEvent, UserRegisteredEvent } from 'src/user/event/user-registered.event';
 import { Repository } from 'typeorm';
-import { ActiveAccountDto, AuthDto } from './dto/auth.dto';
+import { ActiveAccountDto, AuthDto, SetPropertytDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(PropertyEntity)
+    private readonly propertyRepository: Repository<PropertyEntity>,
+    @InjectRepository(EmployeeEntity)
+    private readonly employeeRepository: Repository<EmployeeEntity>,
     private readonly jwtService: JwtService,
     private eventEmitter: EventEmitter2,
   ) {}
@@ -28,24 +34,52 @@ export class AuthService {
     });
 
     if (!user || !compare(createAuthDto.password, user.password)) {
-      throw new UnauthorizedException('Credencial inválida');
+      throw new UnauthorizedException('Credencial inválida.');
     }
 
-    const payload: AuthPayload = {
+    if (!user.active) {
+      throw new NotAcceptableException('Usuário não ativo.');
+    }
+
+    let tempPropId: string | null = null;
+
+    if (user.role === Role.GENERAL_MANAGER) {
+      tempPropId = null;
+    } else if (user.role === Role.OWNER) {
+      const property = await this.propertyRepository.findOne({
+        where: { ownerId: user.id },
+      });
+
+      if (!property || !property.id) {
+        tempPropId = null;
+        // throw new NotFoundException('Propriedade não encontrada para este usuário.');
+      }
+      tempPropId = property?.id ?? null;
+    } else {
+      const employee = await this.employeeRepository.findOne({
+        where: { id: user.employeeId },
+      });
+      if (!employee || !employee.id) {
+        throw new NotFoundException('Propriedade não encontrada para este usuário.');
+      }
+      tempPropId = employee.id;
+    }
+
+    const payload: UserRequest = {
       sub: user.id,
       email: user.email,
+      role: user.role,
+      propertyId: tempPropId ?? '',
     };
-
     const token = this.jwtService.sign(payload);
 
     res.cookie('Authorization', token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
-
     return {
-      user_name:user.name
-    }
+      user_name: user.name,
+    };
   }
 
   public async aLogout(res: Response<any, Record<string, any>>) {
@@ -65,12 +99,13 @@ export class AuthService {
 
     try {
       const payload = this.jwtService.verify(token);
+      return payload;
     } catch (error) {
       throw new UnauthorizedException('Token inválido');
     }
   }
 
-  async aRegister(createAuthDto: CreateUserDto) {
+  public async aRegister(createAuthDto: CreateUserDto) {
     const user = await this.userRepository.findOne({
       where: [{ email: createAuthDto.email }, { cpf: createAuthDto.cpf }],
     });
@@ -92,7 +127,8 @@ export class AuthService {
 
     return 'OK BROT';
   }
-  async aActiveAccount(activeAccountDto: ActiveAccountDto) {
+
+  public async aActiveAccount(activeAccountDto: ActiveAccountDto) {
     const user = await this.userRepository.findOne({
       where: [{ email: activeAccountDto.email }],
     });
@@ -102,7 +138,6 @@ export class AuthService {
     }
     const key = user.id.split('-')[0];
 
-
     if (key != activeAccountDto.key) {
       throw new Error('Key inválida..');
     }
@@ -110,5 +145,33 @@ export class AuthService {
     await this.userRepository.update(user.id, { active: true });
 
     this.eventEmitter.emit('user.registered', new UserRegisteredEvent(user.email, user.name));
+  }
+
+  public async aSetProperty(dto: SetPropertytDto, res: Response) {
+    const token = res.req.cookies['Authorization'];
+    if (!token) {
+      throw new UnauthorizedException('Token não encontrado');
+    }
+
+    const payload: UserRequest = this.jwtService.verify(token);
+
+    const property = await this.propertyRepository.findOne({
+      where: { id: dto.id },
+    });
+
+    if (!property || !property.id) {
+      throw new NotFoundException('Propriedade não encontrada.');
+    }
+    const payloadToken: UserRequest = {
+      sub: payload.sub,
+      email: payload.email,
+      role: payload.role,
+      propertyId: property.id,
+    };
+    const newToken = this.jwtService.sign(payloadToken);
+    res.cookie('Authorization', newToken, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
   }
 }

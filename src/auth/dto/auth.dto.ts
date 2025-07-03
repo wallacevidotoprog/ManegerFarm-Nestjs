@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsString, IsUUID, MinLength } from 'class-validator';
 
 export class AuthDto {
  @IsEmail({}, { message: 'Informe um e-mail válido' })
@@ -14,4 +14,10 @@ export class ActiveAccountDto {
 
   @IsString({ message: 'A key é obrigatória' })
   key: string;
+}
+
+
+export class SetPropertytDto {
+ @IsUUID()
+  id;
 }

@@ -1,78 +1,45 @@
-import { Body, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, Req } from '@nestjs/common';
+import { Request } from 'express';
 
 export abstract class BaseController<CreateDto, UpdateDto, FindWhere = any> {
   constructor(
     protected readonly service: {
-      create: (dto: CreateDto) => Promise<any>;
-      update: (id: string, dto: UpdateDto) => Promise<any>;
-      findOne: (id: string) => Promise<any>;
-      findAll: (where?: FindWhere) => Promise<any[]>;
-      remove: (id: string) => Promise<any>;
+      create: (dto: CreateDto,req: Request) => Promise<any>;
+      update: (id: string, dto: UpdateDto,req: Request) => Promise<any>;
+      findOne: (id: string,req: Request) => Promise<any>;
+      findAll: (req: Request,where?: FindWhere) => Promise<any[]>;
+      remove: (id: string,req: Request) => Promise<any>;
     },
   ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  async create(@Body() dto: CreateDto) {
-    return this.service.create(dto);
+  async create(@Body() dto: CreateDto, @Req() req: Request) {
+     console.log('bug para aqui ??');
+    return this.service.create(dto,req);
   }
 
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() dto: UpdateDto) {
-    return this.service.update(id, dto);
+  async update(@Param('id') id: string, @Body() dto: UpdateDto, @Req() req: Request) {
+    return this.service.update(id, dto,req);
   }
 
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+  async findOne(@Param('id') id: string, @Req() req: Request) {
+    return this.service.findOne(id,req);
   }
 
   @HttpCode(HttpStatus.OK)
   @Get()
-  async findAll(@Query() where: FindWhere) {
-    return this.service.findAll(where);
+  async findAll(@Query() where: FindWhere, @Req() req: Request) {
+    return this.service.findAll(req,where);
   }
 
   @HttpCode(HttpStatus.ACCEPTED)
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.service.remove(id);
+  async delete(@Param('id') id: string, @Req() req: Request) {
+    return this.service.remove(id,req);
   }
 }
-
-// import { Body, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
-
-// export abstract class BaseController<CreateDto, UpdateDto, FindWhere> {
-//   constructor(private readonly service: any) {}
-//   @HttpCode(HttpStatus.CREATED)
-//   @Post()
-//   public async create(@Body() createdto: CreateDto) {
-//     return this.service.create(createdto);
-//   }
-
-//   @HttpCode(HttpStatus.OK)
-//   @Patch(':id')
-//   protected async update(@Param('id') id: string, @Body() updatedto: UpdateDto) {
-//     return this.service.update(id, updatedto);
-//   }
-
-//   @HttpCode(HttpStatus.OK)
-//   @Get(':id')
-//   protected async findOne(@Param('id') id: string) {
-//     return this.service.findOne(id);
-//   }
-
-//   @HttpCode(HttpStatus.OK)
-//   @Get()
-//   protected async findAll(@Query() data: FindWhere) {
-//     return this.service.findAll(data);
-//   }
-
-//   @HttpCode(HttpStatus.ACCEPTED)
-//   @Delete(':id')
-//   protected async delete(@Param('id') id: string) {
-//     return this.service.remove(id);
-//   }
-// }

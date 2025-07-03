@@ -1,57 +1,85 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Request } from 'express';
+import { CrudEvent } from 'src/event/historic/event-crud.event';
 import { DeepPartial, FindOptionsWhere, ILike, ObjectLiteral, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-
+import { ActionModification } from '../Models/Emun/db.enum';
 export abstract class BaseService<
   TModel extends ObjectLiteral,
   CreateDto = DeepPartial<TModel>,
   UpdateDto = DeepPartial<TModel>,
   FindWhere = Partial<TModel>,
 > {
+  @Inject(EventEmitter2)
+  protected readonly eventEmitter: EventEmitter2;
   constructor(protected readonly repo: Repository<TModel>) {}
 
-  async create(dto: CreateDto): Promise<TModel|null> {
+  async create(dto: CreateDto, req: Request): Promise<TModel | null> {
     try {
       const created = this.repo.create(dto as any);
       const entity = Array.isArray(created) ? created[0] : created;
       const result = await this.repo.save(entity);
-      return null
+      this.eventEmitter.emit('crud', new CrudEvent(req, ActionModification.CREATE, this.repo.metadata.tableName, JSON.stringify(result)));
+      return null;
     } catch (error) {
       console.error('Erro ao criar entidade:', error);
       throw new BadRequestException(error?.message || 'Erro ao criar entidade');
     }
   }
 
-  async update(id: string, dto: UpdateDto): Promise<void> {
-    const existing = await this.findOne(id);
-    if (!existing) {
-      throw new NotFoundException(`Registro com id ${id} não encontrado`);
-    }
+  async update(id: string, dto: UpdateDto, req: Request): Promise<void> {
+    try {
+      const existing = await this.findOne(id, req);
+      if (!existing) {
+        throw new NotFoundException(`Registro com id ${id} não encontrado`);
+      }
 
-    await this.repo.update({ id } as unknown as FindOptionsWhere<TModel>, dto as QueryDeepPartialEntity<TModel>);
+      await this.repo.update({ id } as unknown as FindOptionsWhere<TModel>, dto as QueryDeepPartialEntity<TModel>);
+      this.eventEmitter.emit('crud', new CrudEvent(req, ActionModification.UPDATE, this.repo.metadata.tableName, JSON.stringify(existing)));
+    } catch (error) {
+      console.error('Erro ao update entidade:', error);
+      throw new BadRequestException(error?.message || 'Erro ao update entidade');
+    }
   }
 
-  async findOne(id: string): Promise<TModel | null> {
-    return this.repo.findOne({
-      where: { id } as unknown as FindOptionsWhere<TModel>,
-    });
+  async findOne(id: string, req: Request): Promise<TModel | null> {
+    try {
+      return this.repo.findOne({
+        where: { id } as unknown as FindOptionsWhere<TModel>,
+      });
+    } catch (error) {
+      console.error('Erro ao findOne entidade:', error);
+      throw new BadRequestException(error?.message || 'Erro ao findOne entidade');
+    }
   }
 
-  async findAll(where?: FindWhere): Promise<TModel[]> {
-    if (where) {
-      const typeOrmWhere = this.buildTypeOrmWhere(where);
-      return this.repo.find({ where: typeOrmWhere });
+  async findAll(req: Request, where?: FindWhere): Promise<TModel[]> {
+    try {
+      if (where) {
+        const typeOrmWhere = this.buildTypeOrmWhere(where);
+        return this.repo.find({ where: typeOrmWhere });
+      }
+      return this.repo.find();
+    } catch (error) {
+      console.error('Erro ao findAll entidade:', error);
+      throw new BadRequestException(error?.message || 'Erro ao findAll entidade');
     }
-    return this.repo.find();
   }
 
-  async remove(id: string): Promise<void> {
-    const existing = await this.findOne(id);
-    if (!existing) {
-      throw new NotFoundException(`Registro com id ${id} não encontrado`);
-    }
+  async remove(id: string, req: Request): Promise<void> {
+    try {
+      const existing = await this.findOne(id, req);
+      if (!existing) {
+        throw new NotFoundException(`Registro com id ${id} não encontrado`);
+      }
 
-    await this.repo.delete({ id } as unknown as FindOptionsWhere<TModel>);
+      await this.repo.delete({ id } as unknown as FindOptionsWhere<TModel>);
+      this.eventEmitter.emit('crud', new CrudEvent(req, ActionModification.UPDATE, this.repo.metadata.tableName, JSON.stringify(existing)));
+    } catch (error) {
+      console.error('Erro ao remove entidade:', error);
+      throw new BadRequestException(error?.message || 'Erro ao remove entidade');
+    }
   }
 
   protected buildTypeOrmWhere<T extends Record<string, any>>(dto: T): FindOptionsWhere<TModel> {
@@ -66,66 +94,3 @@ export abstract class BaseService<
     return where;
   }
 }
-
-// import { NotFoundException } from '@nestjs/common';
-
-// export abstract class BaseService<TModel, TDelegate> {
-//   constructor(protected readonly model: TDelegate) {}
-
-//   protected async create(data: any) {
-//     return await (this.model as any).create({ data });
-//   }
-
-//   protected async update(id: string, data: any) {
-//     if (!(await this.findOne(id))) {
-//       throw new NotFoundException('Registration from id not found');
-//     }
-
-//     await (this.model as any).update({ where: { id }, data });
-
-//     return;
-//   }
-
-//   protected async findOne(id: string): Promise<TModel> {
-//     return await (this.model as any).findFirst({ where: { id: id } });
-//   }
-
-//   protected async findAll(data: any): Promise<TModel[]> {
-//     if (data || data != null) {
-//       const where = this.buildPrismaWhere(data);
-//       return await (this.model as any).findMany({ where });
-//     }
-//     return await (this.model as any).findMany();
-//   }
-
-//   protected async remove(id: string) {
-//     if (!(await this.findOne(id))) {
-//       throw new NotFoundException('Registration from id not found');
-//     }
-//     await (this.model as any).delete({ where: { id } });
-//     return;
-//   }
-
-//   protected buildPrismaWhere<T extends Record<string, any>>(dto: T) {
-//     const where = {} as PrismaFilter<T>;
-
-//     for (const key in dto) {
-//       const value = dto[key];
-
-//       if (value === undefined || value === null) continue;
-
-//       if (typeof value === 'string') {
-//         where[key] = {
-//           contains: value,
-//         } as any;
-//       } else {
-//         where[key] = value;
-//       }
-//     }
-
-//     return where;
-//   }
-// }
-// type PrismaFilter<T> = {
-//   [K in keyof T]?: T[K] extends string ? { contains: string; mode?: 'insensitive' } : T[K];
-// };

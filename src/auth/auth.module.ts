@@ -7,11 +7,13 @@ import { AppConfigModule } from 'src/common/config/app-config.module';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { PropertyEntity } from 'src/property/entities/property.entity';
+import { EmployeeEntity } from 'src/employee/entities/employee.entity';
 
 @Module({
   imports: [
     AppConfigModule,
-    TypeOrmModule.forFeature([UserEntity, AddressEntity]),
+    TypeOrmModule.forFeature([UserEntity, AddressEntity,PropertyEntity,EmployeeEntity]),
     JwtModule.registerAsync({
       imports: [AppConfigModule],
       inject: [AppConfigEnv],
@@ -23,6 +25,6 @@ import { AuthService } from './auth.service';
   ],
   controllers: [AuthController],
   providers: [AuthService],
-  exports: [JwtModule],
+  exports: [JwtModule,AuthService],
 })
 export class AuthModule {}

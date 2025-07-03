@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
@@ -19,6 +19,8 @@ import { HistoricModificationModule } from './historic-modification/historic-mod
 import { PropertyModule } from './property/property.module';
 import { MailService } from './service/mail-service/mail-service.service';
 import { UserModule } from './user/user.module';
+import { CrudHistoricEventService } from './service/crud-historic-event/crud-historic-event.service';
+// import { UserMiddleware } from './common/middleware/user.middleware';
 
 @Module({
   imports: [
@@ -35,6 +37,11 @@ import { UserModule } from './user/user.module';
     EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [AppService, MailService],
+  providers: [AppService, MailService,],
 })
-export class AppModule {}
+export class AppModule {
+
+  //  configure(consumer: MiddlewareConsumer) {
+  //   consumer.apply(UserMiddleware).forRoutes('*'); 
+  // }
+}

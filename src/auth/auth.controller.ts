@@ -1,8 +1,12 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post,Res } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { ActiveAccountDto, AuthDto } from './dto/auth.dto';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/Domain/Models/Emun/db.enum';
 import { CreateUserDto } from 'src/user/dto/user.dto';
+import { AuthService } from './auth.service';
+import { ActiveAccountDto, AuthDto, SetPropertytDto } from './dto/auth.dto';
+import { AuthGuard } from './Guards/auth.guard';
+import { RolesGuard } from './Guards/roles.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -11,9 +15,10 @@ export class AuthController {
   @HttpCode(HttpStatus.ACCEPTED)
   @Post('login')
   async login(@Body() createAuthDto: AuthDto, @Res({ passthrough: true }) res: Response) {
-    return await this.authService.aLogin(createAuthDto, res );
+    return await this.authService.aLogin(createAuthDto, res);
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('logout')
   async logout(@Res({ passthrough: true }) res: Response) {
@@ -32,9 +37,17 @@ export class AuthController {
     return await this.authService.aRegister(createDto);
   }
 
-   @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.OK)
   @Post('active-account')
-  async aActiveAccount(@Body()activeAccountDto: ActiveAccountDto) {
+  async aActiveAccount(@Body() activeAccountDto: ActiveAccountDto) {
     return await this.authService.aActiveAccount(activeAccountDto);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.GENERAL_MANAGER)
+  @HttpCode(HttpStatus.OK)
+  @Post('set-property')
+  async aSetProperty(@Body() dto: SetPropertytDto, @Res({ passthrough: true }) res: Response) {
+    return await this.authService.aSetProperty(dto, res);
   }
 }

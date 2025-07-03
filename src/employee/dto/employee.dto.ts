@@ -24,8 +24,8 @@ export class CreateEmployeeDto {
 
   @IsOptional()
   @IsArray()
-  @IsEnum(CategoryCnh,{each:true})
-  @Type(()=> String)
+  @IsEnum(CategoryCnh, { each: true })
+  @Type(() => String)
   category_cnh?: CategoryCnh[];
 
   @IsOptional()
@@ -44,8 +44,9 @@ export class CreateEmployeeDto {
   @Type(() => Date)
   birth: Date;
 
+  @IsOptional()
   @IsUUID()
-  addressId: string;
+  addressId?: string;
 
   @IsOptional()
   @Type(() => CreateAddressDto)
@@ -85,7 +86,7 @@ export class CreateEmployeeDto {
   @Type(() => CreatePropertyDto)
   property?: CreatePropertyDto;
 
-    @IsOptional()
+  @IsOptional()
   @IsUUID()
   functionId?: string;
 
@@ -96,7 +97,7 @@ export class CreateEmployeeDto {
   @IsOptional()
   @IsBoolean()
   active?: boolean = true;
-  
+
   @IsOptional()
   @Type(() => CreateUserDto)
   user?: CreateUserDto;
