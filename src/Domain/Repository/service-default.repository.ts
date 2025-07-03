@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DeepPartial, FindOptionsWhere, ILike, ObjectLiteral, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
@@ -6,13 +6,20 @@ export abstract class BaseService<
   TModel extends ObjectLiteral,
   CreateDto = DeepPartial<TModel>,
   UpdateDto = DeepPartial<TModel>,
-  FindWhere = Partial<TModel>
+  FindWhere = Partial<TModel>,
 > {
   constructor(protected readonly repo: Repository<TModel>) {}
 
-  async create(dto: CreateDto): Promise<TModel> {
-    const entity = this.repo.create(dto as any)[0] as TModel;
-    return this.repo.save(entity);
+  async create(dto: CreateDto): Promise<TModel|null> {
+    try {
+      const created = this.repo.create(dto as any);
+      const entity = Array.isArray(created) ? created[0] : created;
+      const result = await this.repo.save(entity);
+      return null
+    } catch (error) {
+      console.error('Erro ao criar entidade:', error);
+      throw new BadRequestException(error?.message || 'Erro ao criar entidade');
+    }
   }
 
   async update(id: string, dto: UpdateDto): Promise<void> {
@@ -59,7 +66,6 @@ export abstract class BaseService<
     return where;
   }
 }
-
 
 // import { NotFoundException } from '@nestjs/common';
 

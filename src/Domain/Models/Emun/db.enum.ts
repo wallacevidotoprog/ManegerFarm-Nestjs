@@ -1,46 +1,47 @@
 export enum PropertyStatus {
-  NONE,
-  ACTIVE,
-  INACTIVE,
-  LEASED,
+  NONE = 'NONE',
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  LEASED = 'LEASED',
 }
 
 export enum Departaments {
-  NONE,
-  OPERATIONAL,
-  ADMINISTRATIVE,
-  FINANCIAL,
-  MAINTENANCE
+  NONE = 'NONE',
+  OPERATIONAL = 'OPERATIONAL',
+  ADMINISTRATIVE = 'ADMINISTRATIVE',
+  FINANCIAL = 'FINANCIAL',
+  MAINTENANCE = 'MAINTENANCE',
 }
 
 export enum CategoryCnh {
-  NONE,
-  A,
-  B,
-  C,
-  D,
-  E
+  NONE = 'NONE',
+  A = 'A',
+  B = 'B',
+  C = 'C',
+  D = 'D',
+  E = 'E',
 }
 
 export enum Sex {
-  NONE,
-  MASCULINO,
-  FEMININO,
-  OUTROS
+  NONE = 'NONE',
+  MASCULINO = 'MASCULINO',
+  FEMININO = 'FEMININO',
+  OUTROS = 'OUTROS',
 }
 
 export enum Role {
-  NONE,
-  DEV,
-  ADMIN,
-  MANEGER,
-  EMPLOYEE,
-  OWNER
+  NONE = 'NONE',
+  DEV = 'DEV',
+  ADMIN = 'ADMIN',
+  MANEGER = 'MANEGER',
+  GENERL_MANAGER = 'GENERL_MANAGER',
+  EMPLOYEE = 'EMPLOYEE',
+  OWNER = 'OWNER',
 }
 
 export enum ActionModification {
-  NONE,
-  CREATE,
-  UPDATE,
-  DELETE
+  NONE = 'NONE',
+  CREATE = 'CREATE',
+  UPDATE = 'UPDATE',
+  DELETE = 'DELETE',
 }

@@ -1,11 +1,9 @@
-
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActivityEntity } from 'src/activities/entities/activity.entity';
 import { AddressEntity } from 'src/address/entities/address.entity';
-import { DepartamentFunctionsEntity } from 'src/departament/entities/department-functions.entity';
 import { DepartamentEntity } from 'src/departament/entities/department.entity';
 import { FunctionsEntity } from 'src/departament/entities/functions .entity';
 import { EmployeeEntity } from 'src/employee/entities/employee.entity';
@@ -23,7 +21,7 @@ import { AppConfigEnv } from './app-config.env';
       inject: [AppConfigEnv],
       useFactory: (config: AppConfigEnv) => {
         return {
-          type: 'mysql',
+          type: 'postgres',
           host: config.DB_HOST,
           port: config.DB_PORT,
           username: config.DB_USERNAME,
@@ -35,13 +33,13 @@ import { AppConfigEnv } from './app-config.env';
             EmployeeEntity,
             ActivityEntity,
             DepartamentEntity,
-            DepartamentFunctionsEntity,
             FunctionsEntity,
             PropertyEntity,
             PropertyActivitiesEntity,
             HistoricModificationEntity,
           ],
-          // synchronize: true,
+          synchronize: true,
+          autoLoadEntities: true,
           // logging: true,
         };
       },
@@ -66,7 +64,7 @@ import { AppConfigEnv } from './app-config.env';
         };
       },
     }),
-  ], 
+  ],
 
   providers: [AppConfigEnv],
   exports: [AppConfigEnv],

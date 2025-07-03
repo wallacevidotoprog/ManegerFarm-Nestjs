@@ -21,8 +21,6 @@ export class DepartamentEntity extends EntityDefault {
   @OneToMany(() => FunctionsEntity, (fn) => fn.departament)
   functionsList: FunctionsEntity[];
 
-  // @OneToMany(() => DepartamentFunctionsEntity, (df) => df.departament)
-  // departamentFunctions: DepartamentFunctionsEntity[];
 }
 // export class DepartamentEntity extends EntityDefault {
 //   name: string;

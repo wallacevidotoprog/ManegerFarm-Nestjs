@@ -1,5 +1,5 @@
 import { AddressEntity } from 'src/address/entities/address.entity';
-import { DepartamentFunctionsEntity } from 'src/departament/entities/department-functions.entity';
+import { FunctionsEntity } from 'src/departament/entities/functions .entity';
 import { CategoryCnh, Sex } from 'src/Domain/Models/Emun/db.enum';
 import { EntityDefault } from 'src/Domain/Models/entity-default.entity';
 import { PropertyEntity } from 'src/property/entities/property.entity';
@@ -23,9 +23,10 @@ export class EmployeeEntity extends EntityDefault {
   @Column({
     type: 'enum',
     enum: CategoryCnh,
+    array:true,
     nullable: true,
   })
-  category_cnh?: CategoryCnh;
+  category_cnh?: CategoryCnh[];
 
   @Column({ type: 'date', nullable: true })
   maturity_cnh?: Date;
@@ -39,10 +40,10 @@ export class EmployeeEntity extends EntityDefault {
   @Column({ type: 'date' })
   birth: Date;
 
-  @Column()
+  @Column({ nullable: true })
   addressId: string;
 
-  @ManyToOne(() => AddressEntity, { cascade: true, eager: true })
+  @ManyToOne(() => AddressEntity, { cascade: true, eager: true ,nullable: true})
   @JoinColumn({ name: 'addressId' })
   address?: AddressEntity;
 
@@ -62,11 +63,12 @@ export class EmployeeEntity extends EntityDefault {
     type: 'enum',
     enum: Sex,
     nullable: true,
+    default: Sex.OUTROS,
   })
   sex?: Sex;
 
   @Column({ type: 'date', nullable: true })
-  resignation?: Date;
+  demission?: Date;
 
   @Column({ nullable: true })
   propertyId?: string;
@@ -78,34 +80,10 @@ export class EmployeeEntity extends EntityDefault {
   @Column({ default: true })
   active: boolean;
 
-  @OneToMany(() => DepartamentFunctionsEntity, (df) => df.employee)
-  departmentFunctions: DepartamentFunctionsEntity[];
+  @ManyToOne(() => FunctionsEntity, (func) => func.employees)
+  @JoinColumn({ name: 'functionId' })
+  function: FunctionsEntity;
 
   @OneToOne(() => UserEntity, (user) => user.employee)
   user?: UserEntity;
 }
-// export class EmployeeEntity extends EntityDefault {
-//   name: string;
-//   cpf: string;
-//   rg?: string;
-//   cnh?: string;
-//   category_cnh?: CategoryCnh;
-//   maturity_cnh?: Date;
-//   email: string;
-//   phone?: string;
-//   birth: Date;
-//   addressId: string;
-//   address?: AddressEntity;
-//   admission: Date;
-//   salary: number;
-//   cbo?: string;
-//   pis?: string;
-//   sex?: Sex;
-//   resignation?: Date;
-//   propertyId?: string;
-//   property?: PropertyEntity;
-//   active: boolean = true;
-
-//   departmentFunctions: DepartamentFunctionsEntity[];
-//   user?: UserEntity;
-// }

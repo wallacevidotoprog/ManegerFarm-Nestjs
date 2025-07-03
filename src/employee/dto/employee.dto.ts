@@ -1,7 +1,8 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { Type } from 'class-transformer';
-import { IsBoolean, IsDate, IsEmail, IsEnum, IsNumber, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
+import { IsArray, IsBoolean, IsDate, IsEmail, IsEnum, IsNumber, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
 import { CreateAddressDto } from 'src/address/dto/address.dto';
+import { CreateFunctionsDto } from 'src/departament/dto/functions .dto';
 import { CategoryCnh, Sex } from 'src/Domain/Models/Emun/db.enum';
 import { CreatePropertyDto } from 'src/property/dto/property.dto';
 import { CreateUserDto } from 'src/user/dto/user.dto';
@@ -22,8 +23,10 @@ export class CreateEmployeeDto {
   cnh?: string;
 
   @IsOptional()
-  @IsEnum(CategoryCnh)
-  category_cnh?: CategoryCnh;
+  @IsArray()
+  @IsEnum(CategoryCnh,{each:true})
+  @Type(()=> String)
+  category_cnh?: CategoryCnh[];
 
   @IsOptional()
   @IsDate()
@@ -72,7 +75,7 @@ export class CreateEmployeeDto {
   @IsOptional()
   @IsDate()
   @Type(() => Date)
-  resignation?: Date;
+  demission?: Date;
 
   @IsOptional()
   @IsUUID()
@@ -82,19 +85,18 @@ export class CreateEmployeeDto {
   @Type(() => CreatePropertyDto)
   property?: CreatePropertyDto;
 
+    @IsOptional()
+  @IsUUID()
+  functionId?: string;
+
+  @IsOptional()
+  @Type(() => CreateFunctionsDto)
+  function?: CreateFunctionsDto;
+
+  @IsOptional()
   @IsBoolean()
-  active: boolean = true;
-
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  createAt?: Date;
-
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  updateAt?: Date;
-
+  active?: boolean = true;
+  
   @IsOptional()
   @Type(() => CreateUserDto)
   user?: CreateUserDto;

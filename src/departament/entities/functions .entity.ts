@@ -1,7 +1,7 @@
 import { EntityDefault } from 'src/Domain/Models/entity-default.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-import { DepartamentFunctionsEntity } from './department-functions.entity';
 import { DepartamentEntity } from './department.entity';
+import { EmployeeEntity } from 'src/employee/entities/employee.entity';
 
 @Entity('functions')
 export class FunctionsEntity extends EntityDefault {
@@ -18,14 +18,7 @@ export class FunctionsEntity extends EntityDefault {
   @JoinColumn({ name: 'departamentId' })
   departament: DepartamentEntity;
 
-  @OneToMany(() => DepartamentFunctionsEntity, (df) => df.functions)
-  departamentFunctions: DepartamentFunctionsEntity[];
+   @OneToMany(() => EmployeeEntity, (emp) => emp.function)
+  employees: EmployeeEntity[];
 }
-// export class FunctionsEntity extends EntityDefault {
-//   name: string;
-//   description?: string;
-//   departmentId: string;
-//   department: DepartamentEntity;
 
-//   departmentFunctions: DepartamentFunctionsEntity[];
-// }

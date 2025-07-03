@@ -2,17 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/Domain/Repository/service-default.repository';
 import { Repository } from 'typeorm';
-import { DepartamentFunctionsEntity } from './entities/department-functions.entity';
 import { DepartamentEntity } from './entities/department.entity';
 import { FunctionsEntity } from './entities/functions .entity';
 
 @Injectable()
 export class DepartamentService extends BaseService<DepartamentEntity> {
+  
   constructor(
     @InjectRepository(DepartamentEntity)
     protected readonly repo: Repository<DepartamentEntity>,
   ) {
     super(repo);
+  }
+
+  async getDescAll() {
+    return this.repo.find({ select:{id:true,name:true,functions:true,description:true,functionsList:{id:true,name:true,description:true}}, relations:{functionsList:true,}});
   }
 }
 
@@ -26,12 +30,4 @@ export class FunctionsService extends BaseService<FunctionsEntity> {
   }
 }
 
-@Injectable()
-export class DepartamentFunctionsService extends BaseService<DepartamentFunctionsEntity> {
-  constructor(
-    @InjectRepository(DepartamentFunctionsEntity)
-    protected readonly repo: Repository<DepartamentFunctionsEntity>,
-  ) {
-    super(repo);
-  }
-}
+
