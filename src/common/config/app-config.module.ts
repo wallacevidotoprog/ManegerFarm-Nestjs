@@ -27,7 +27,7 @@ import { AppConfigEnv } from './app-config.env';
         return {
           type: 'postgres',
           host: config.DB_HOST,
-          port: config.DB_PORT,
+          port: config.DB_PORT || 5432,
           username: config.DB_USERNAME,
           password: config.DB_PASSWORD,
           database: config.DB_DATABASE,
