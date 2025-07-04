@@ -46,7 +46,7 @@ import { AppConfigEnv } from './app-config.env';
             VaccineEntity,
             BreedEntity,
           ],
-          synchronize: true,
+          // synchronize: true,
           autoLoadEntities: true,
           // logging: true,
           
