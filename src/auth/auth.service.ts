@@ -59,10 +59,10 @@ export class AuthService {
       const employee = await this.employeeRepository.findOne({
         where: { id: user.employeeId },
       });
-      if (!employee || !employee.id) {
+      if (!employee || !employee.propertyId) {
         throw new NotFoundException('Propriedade não encontrada para este usuário.');
       }
-      tempPropId = employee.id;
+      tempPropId = employee.propertyId;
     }
 
     const payload: UserRequest = {
@@ -173,5 +173,17 @@ export class AuthService {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
+  }
+
+  public async aRole( res: Response) {
+    const token = res.req.cookies['Authorization'];
+    if (!token) {
+      throw new UnauthorizedException('Token não encontrado');
+    }
+
+    const payload: UserRequest = this.jwtService.verify(token);
+
+    return payload.role
+    
   }
 }

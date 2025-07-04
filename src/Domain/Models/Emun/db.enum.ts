@@ -33,7 +33,7 @@ export enum Role {
   NONE = 'NONE',
   DEV = 'DEV',
   ADMIN = 'ADMIN',
-  MANEGER = 'MANEGER',
+  MANAGER = 'MANAGER',
   GENERAL_MANAGER = 'GENERAL_MANAGER',
   EMPLOYEE = 'EMPLOYEE',
   OWNER = 'OWNER',
@@ -44,4 +44,40 @@ export enum ActionModification {
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',
   DELETE = 'DELETE',
+}
+
+export enum BovineModalities {
+  NONE = 'NONE',
+  CUT = 'CUT',
+  MILK = 'MILK',
+  MIXED = 'MIXED',
+}
+
+export enum BovinePhasesCut {
+  NONE = 'NONE',
+  CUT = 'CUT',
+  CREATE = 'CREATE',
+  RECREATE = 'RECREATE',
+}
+
+export enum BovinePhasesMilk {
+  NONE = 'NONE',
+  MILK = 'MILK',
+  PREGNANT = 'PREGNANT',
+}
+
+export enum BovineSituation {
+  NONE = 'NONE',
+  DONATION = 'DONATION',
+  SINGLE = 'SINGLE',
+  PREGNANT = 'PREGNANT',
+  ADULT = 'ADULT',
+}
+
+export enum AreaType {
+  NONE = 'NONE',
+  PASTURE = 'PASTURE',
+  COCHO = 'COCHO',
+  CONFINEMENT = 'CONFINEMENT',
+  SEMI_CONFINEMENT = 'SEMI_CONFINEMENT',
 }

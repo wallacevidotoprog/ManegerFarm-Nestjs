@@ -6,6 +6,7 @@ import { EmployeeEntity } from 'src/employee/entities/employee.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { PropertyActivitiesEntity } from './property-activities.entity';
+import { BovineEntity } from 'src/pecuaria/bovine/entities/bovine.entity';
 
 @Entity('properties')
 export class PropertyEntity extends EntityDefault {
@@ -56,21 +57,8 @@ export class PropertyEntity extends EntityDefault {
 
   @OneToMany(() => EmployeeEntity, (employee) => employee.property)
   employees: EmployeeEntity[];
+
+  @OneToMany(()=>BovineEntity , (bov)=> bov.property)
+  bovines:BovineEntity[]
 }
 
-// export class PropertyEntity extends EntityDefault {
-//   cnpj: string;
-//   company: string;
-//   name: string;
-//   addressId: string;
-//   address: AddressEntity;
-//   size: number;
-//   mapPoints: MapPoint[];
-//   ownerId?: string;
-//   owner?: User;
-//   status: PropertyStatus = PropertyStatus.NONE;
-//   active: boolean = true;
-//   description?: string;
-//   propertyActivities: PropertyActivitiesEntity[];
-//   employees: EmployeeEntity[];
-// }

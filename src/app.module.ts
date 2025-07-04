@@ -21,6 +21,7 @@ import { MailService } from './service/mail-service/mail-service.service';
 import { UserModule } from './user/user.module';
 import { CrudHistoricEventService } from './service/crud-historic-event/crud-historic-event.service';
 // import { UserMiddleware } from './common/middleware/user.middleware';
+import { BovineModule } from './pecuaria/bovine/bovine.module';
 
 @Module({
   imports: [
@@ -35,6 +36,8 @@ import { CrudHistoricEventService } from './service/crud-historic-event/crud-his
     AuthModule,
 
     EventEmitterModule.forRoot(),
+
+    BovineModule,
   ],
   controllers: [AppController],
   providers: [AppService, MailService,],

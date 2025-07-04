@@ -22,6 +22,10 @@ export class AppConfigEnv {
   get DB_DATABASE(): string {
     return this.requireEnv(this.config.get<string>('DB_DATABASE'), 'DB_DATABASE');
   }
+   get DB_SSL(): string {
+    return this.requireEnv(this.config.get<string>('JWT_SECRET'), 'JWT_SECRET');
+  }
+
   get JWT_SECRET(): string {
     return this.requireEnv(this.config.get<string>('JWT_SECRET'), 'JWT_SECRET');
   }

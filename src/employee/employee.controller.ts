@@ -10,7 +10,7 @@ import { CreateEmployeeDto, UpdateEmployeeDto } from './dto/employee.dto';
 import { EmployeeService } from './employee.service';
 
 @UseGuards(AuthGuard, RolesGuard)
-@Roles(Role.OWNER, Role.MANEGER, Role.ADMIN, Role.GENERAL_MANAGER)
+@Roles(Role.OWNER, Role.MANAGER, Role.ADMIN, Role.GENERAL_MANAGER)
 @Controller('employee')
 export class EmployeeController extends BaseController<CreateEmployeeDto, UpdateEmployeeDto, any> {
   constructor(private readonly employeeService: EmployeeService) {
@@ -19,8 +19,9 @@ export class EmployeeController extends BaseController<CreateEmployeeDto, Update
 
   @Post()
   override create(@Body() dto: CreateEmployeeDto, @Req() req: Request) {
-    const user = req?.user as UserRequest;  
-    
+    const user = req?.user as UserRequest;
+    console.log('user:', user);
+
     if (!user || !user.propertyId) {
       throw new NotFoundException('Propriedade não encontrada para o seu usuário.');
     }

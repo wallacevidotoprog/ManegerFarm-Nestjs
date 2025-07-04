@@ -50,4 +50,11 @@ export class AuthController {
   async aSetProperty(@Body() dto: SetPropertytDto, @Res({ passthrough: true }) res: Response) {
     return await this.authService.aSetProperty(dto, res);
   }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @Get('role')
+  async aRole(@Res({ passthrough: true }) res: Response) {
+    return await this.authService.aRole(res);
+  }
 }

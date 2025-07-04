@@ -8,6 +8,10 @@ import { DepartamentEntity } from 'src/departament/entities/department.entity';
 import { FunctionsEntity } from 'src/departament/entities/functions .entity';
 import { EmployeeEntity } from 'src/employee/entities/employee.entity';
 import { HistoricModificationEntity } from 'src/historic-modification/entities/historic-modification.entity';
+import { AreaEntity } from 'src/pecuaria/bovine/entities/area.entity';
+import { BovineEntity } from 'src/pecuaria/bovine/entities/bovine.entity';
+import { BreedEntity } from 'src/pecuaria/bovine/entities/breed.entity';
+import { VaccineEntity } from 'src/pecuaria/bovine/entities/vaccine.entity';
 import { PropertyActivitiesEntity } from 'src/property/entities/property-activities.entity';
 import { PropertyEntity } from 'src/property/entities/property.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
@@ -37,10 +41,15 @@ import { AppConfigEnv } from './app-config.env';
             PropertyEntity,
             PropertyActivitiesEntity,
             HistoricModificationEntity,
+            BovineEntity,
+            AreaEntity,
+            VaccineEntity,
+            BreedEntity,
           ],
           synchronize: true,
           autoLoadEntities: true,
           // logging: true,
+          
         };
       },
     }),
